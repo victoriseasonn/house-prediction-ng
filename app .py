@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+from scraper import get_live_prices
 
 st.set_page_config(page_title="Naija Property AI", page_icon="🏠", layout="centered")
 
@@ -70,3 +72,19 @@ else:
         with b2:
             st.info(f"Structure & Amenities Value: \n₦{(final_total * 0.65):,.2f}")
         st.caption(f"💡 Estimated Rent: ₦{(final_total * 0.10):,.2f} per year.")
+
+# --- LIVE DATA SECTION ---
+st.markdown("---") 
+st.subheader(f"🏠 Real-time Listings")
+
+if st.button("Check PropertyPro.ng for Live Prices"):
+    with st.spinner("Searching the web..."):
+        # This calls the robot in your scraper.py file
+        # We use 'Lagos' as a default if the state variable name is different in your code
+        df_live = get_live_prices("Lagos") 
+        
+        if df_live is not None and not df_live.empty:
+            st.write("Here are the latest 5 listings found:")
+            st.table(df_live) 
+        else:
+            st.error("Could not find live data. Try again in a moment!")
